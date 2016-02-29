@@ -19,9 +19,9 @@ public class ListRepresentativesActivity extends AppCompatActivity {
     // you want to use the same images.
     private void initializeData() {
         persons = new ArrayList<>();
-        persons.add(new Senator("Senator Barbara Boxer", "1993 - 2016", R.drawable.emma, R.drawable.democrat));
-        persons.add(new Senator("Senator Mitch McConnell", "1993 - 2016", R.drawable.lavery, R.drawable.republican));
-        persons.add(new Senator("Senator Bernie Sanders", "2007 - 2016", R.drawable.lillie, R.drawable.independent));
+        persons.add(new Senator("Senator Barbara Boxer", "1993 - 2016", R.drawable.barbara, R.drawable.democrat));
+        persons.add(new Senator("Senator Mitch McConnell", "1993 - 2016", R.drawable.mitch, R.drawable.republican));
+        persons.add(new Senator("Senator Bernie Sanders", "2007 - 2016", R.drawable.bernie, R.drawable.independent));
         // Intent sendIntent = new Intent(getBaseContext(), PhoneToWatchService.class);
         // sendIntent.putExtra("CAT_NAME", "Fred");
         // startService(sendIntent);
