@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="5dp">
+    <TextView
+        android:fontFamily="sans-serif-light"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/senator_name"
+        android:layout_gravity="center_horizontal"
+        android:text="Senator Name"
+        android:textColor="@color/black"
+        android:textSize="12sp"/>
+    <TextView
+        android:id="@+id/senator_party"
+        android:layout_gravity="center_horizontal"
+        android:text="Senator Party"
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

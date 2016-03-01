@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 /**
@@ -45,7 +47,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
     @Override
     public void onBindViewHolder(SenatorViewHolder senatorViewHolder, int i) {
         Drawable[] layers = new Drawable[2];
-        System.out.println("fuck");
         Bitmap bg = decodeSampledBitmapFromResource(parent.getResources(), senators.get(i).photoId, 155, 100);
         layers[0] = new BitmapDrawable(parent.getResources(), bg);
         layers[1] = ContextCompat.getDrawable(parent.getContext(), senators.get(i).partyId);
@@ -53,6 +54,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
         senatorViewHolder.senatorPhoto.setImageDrawable(layerDrawable);
         senatorViewHolder.senatorName.setText(senators.get(i).name);
         senatorViewHolder.senatorTerm.setText(senators.get(i).term);
+        senatorViewHolder.senatorWebsite.setText(senators.get(i).website);
+        senatorViewHolder.senatorEmail.setText(senators.get(i).email);
+        senatorViewHolder.senatorTweet.setText(senators.get(i).tweet);
     }
 
     @Override
@@ -64,6 +68,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
         CardView cv;
         TextView senatorName;
         TextView senatorTerm;
+        TextView senatorEmail;
+        TextView senatorWebsite;
+        TextView senatorTweet;
         ImageView senatorPhoto;
 
         SenatorViewHolder(View itemView) {
@@ -72,6 +79,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
             senatorName = (TextView)itemView.findViewById(R.id.senator_name);
             senatorTerm = (TextView)itemView.findViewById(R.id.senator_term);
             senatorPhoto = (ImageView)itemView.findViewById(R.id.senator_photo);
+            senatorEmail = (TextView)itemView.findViewById(R.id.senator_email);
+            senatorWebsite = (TextView)itemView.findViewById(R.id.senator_website);
+            senatorTweet = (TextView)itemView.findViewById(R.id.senator_tweet);
         }
     }
 

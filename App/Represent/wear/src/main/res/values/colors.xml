@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="democrat">#2D9CDB</color>
+    <color name="republican">#EB5757</color>
+    <color name="independent">#27AE60</color>
+</resources>

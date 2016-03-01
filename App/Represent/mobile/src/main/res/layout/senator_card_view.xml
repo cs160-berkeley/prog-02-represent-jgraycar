@@ -29,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/senator_name"
+            android:layout_marginBottom="5dp"
             android:layout_toEndOf="@+id/senator_photo"
             android:layout_alignParentTop="true"
             android:textColor="#000"
@@ -38,7 +39,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="25dp"
             android:id="@+id/senator_term"
             android:textSize="14sp"
             android:layout_toEndOf="@+id/senator_photo"
@@ -83,6 +84,68 @@
             android:layout_toEndOf="@+id/websiteImageView"
             android:layout_below="@+id/emailImageView"
             />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/senator_photo"
+            android:layout_alignParentStart="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="12dp"
+                android:id="@+id/twitterIcon"
+                android:src="@drawable/twitter"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tweetBlurb"
+                android:text="Latest tweet • "
+                android:textSize="13sp"
+                android:layout_toEndOf="@+id/twitterIcon"
+                android:layout_alignParentTop="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tweetTime"
+                android:textSize="13sp"
+                android:text="13 hours ago"
+                android:layout_toEndOf="@+id/tweetBlurb"
+                android:layout_alignParentTop="true"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:textColor="#000"
+                android:paddingTop="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:id="@+id/senator_tweet"
+                android:layout_below="@+id/twitterIcon"
+                android:layout_centerHorizontal="true" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/buttonColor"
+                android:textSize="14sp"
+                android:minHeight="20dp"
+                android:text="MORE INFO"
+                android:id="@+id/button"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_below="@+id/senator_tweet"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
 
     </RelativeLayout>
 
