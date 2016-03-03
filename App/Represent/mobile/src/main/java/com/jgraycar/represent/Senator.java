@@ -9,17 +9,26 @@ class Senator {
     String email;
     String website;
     String tweet;
+    String party;
     int photoId;
-    int partyId;
 
-    Senator(String name, String term, int photoId, int partyId, String email,
+    Senator(String name, String term, int photoId, String party, String email,
             String website, String tweet) {
         this.name = name;
         this.term = term;
         this.photoId = photoId;
-        this.partyId = partyId;
         this.email = email;
         this.website = website;
         this.tweet = tweet;
+        this.party = party;
+    }
+
+    public int partyIconId() {
+        if (party.equalsIgnoreCase("democrat")) {
+            return R.drawable.democrat;
+        } else if (party.equalsIgnoreCase("republican")) {
+            return R.drawable.republican;
+        }
+        return R.drawable.independent;
     }
 }

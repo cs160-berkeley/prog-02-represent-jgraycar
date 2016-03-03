@@ -49,7 +49,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
         Drawable[] layers = new Drawable[2];
         Bitmap bg = decodeSampledBitmapFromResource(parent.getResources(), senators.get(i).photoId, 155, 100);
         layers[0] = new BitmapDrawable(parent.getResources(), bg);
-        layers[1] = ContextCompat.getDrawable(parent.getContext(), senators.get(i).partyId);
+        layers[1] = ContextCompat.getDrawable(parent.getContext(), senators.get(i).partyIconId());
         LayerDrawable layerDrawable = new LayerDrawable(layers);
         senatorViewHolder.senatorPhoto.setImageDrawable(layerDrawable);
         senatorViewHolder.senatorName.setText(senators.get(i).name);

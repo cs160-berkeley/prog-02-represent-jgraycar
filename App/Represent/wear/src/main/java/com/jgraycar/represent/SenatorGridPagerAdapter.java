@@ -8,6 +8,8 @@ import android.support.wearable.view.CardFragment;
 import android.support.wearable.view.FragmentGridPagerAdapter;
 import android.support.wearable.view.GridPagerAdapter;
 
+import java.util.ArrayList;
+
 /**
  * Created by Joel on 2/29/16.
  */
@@ -23,10 +25,18 @@ public class SenatorGridPagerAdapter extends FragmentGridPagerAdapter {
     // Obtain the UI fragment at the specified position
     @Override
     public Fragment getFragment(int row, int col) {
-        Senator senator = ((DisplaySenatorActivity) mContext).senators[col];
-        CardFragment fragment = SenatorCardFragment.create(senator.name, senator.party);
-        fragment.setContentPadding(0,0,0,0);
-        fragment.setCardMargins(0,0,0,0);
+        ArrayList<Senator> senators = ((DisplaySenatorActivity) mContext).senators;
+        Fragment fragment;
+
+        if (col < senators.size()) {
+            Senator senator = senators.get(col);
+            fragment = SenatorCardFragment.create(senator.name, senator.party);
+            ((CardFragment) fragment).setContentPadding(0, 0, 0, 0);
+            ((CardFragment) fragment).setCardMargins(0, 0, 0, 0);
+        } else {
+            int location = ((DisplaySenatorActivity) mContext).location;
+            fragment = ElectionFragment.create(location);
+        }
 
         return fragment;
     }
@@ -34,9 +44,9 @@ public class SenatorGridPagerAdapter extends FragmentGridPagerAdapter {
     // Obtain the background image for the specific page
     @Override
     public Drawable getBackgroundForPage(int row, int column) {
-        if( row == 0 ) {
+        if(row == 0 && column < ((DisplaySenatorActivity) mContext).senators.size()) {
             // Place image at specified position
-            int photoId = ((DisplaySenatorActivity) mContext).senators[column].photoId;
+            int photoId = ((DisplaySenatorActivity) mContext).senators.get(column).photoId;
             return mContext.getResources().getDrawable(photoId, null);
         } else {
             // Default to background image for row
@@ -47,12 +57,22 @@ public class SenatorGridPagerAdapter extends FragmentGridPagerAdapter {
     // Obtain the number of pages (vertical)
     @Override
     public int getRowCount() {
-        return 1;
+        ArrayList<Senator> senators = ((DisplaySenatorActivity) mContext).senators;
+        if (senators.size() > 0) {
+            return 1;
+        }
+
+        return 0;
     }
 
     // Obtain the number of pages (horizontal)
     @Override
     public int getColumnCount(int rowNum) {
-        return ((DisplaySenatorActivity) mContext).senators.length;
+        ArrayList<Senator> senators = ((DisplaySenatorActivity) mContext).senators;
+        if (senators.size() > 0) {
+            return ((DisplaySenatorActivity) mContext).senators.size() + 1;
+        }
+
+        return 0;
     }
 }

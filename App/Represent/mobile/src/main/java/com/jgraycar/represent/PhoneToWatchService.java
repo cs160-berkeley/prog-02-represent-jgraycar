@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -12,12 +13,15 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
+import java.util.ArrayList;
+
 /**
  * Created by joleary on 2/19/16.
  */
 public class PhoneToWatchService extends Service {
 
     private GoogleApiClient mApiClient;
+    private static final String SENATOR_INFO = "/SENATOR_INFO";
 
     @Override
     public void onCreate() {
@@ -45,10 +49,16 @@ public class PhoneToWatchService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Which cat do we want to feed? Grab this info from INTENT
-        // which was passed over when we called startService
         Bundle extras = intent.getExtras();
-        final String catName = extras.getString("CAT_NAME");
+
+        String[] names = extras.getStringArrayList(ListRepresentativesActivity.NAMES_KEY).toArray(new String[0]);
+        String[] parties = extras.getStringArrayList(ListRepresentativesActivity.PARTIES_KEY).toArray(new String[0]);
+        int location = extras.getInt(ListRepresentativesActivity.LOCATION_KEY);
+
+        String namePart = TextUtils.join(":", names);
+        String partyPart = TextUtils.join(":", parties);
+        String[] parts = new String[] { namePart, partyPart, String.valueOf(location) };
+        final String senatorInfo = TextUtils.join("+", parts);
 
         // Send the message with the cat name
         new Thread(new Runnable() {
@@ -57,7 +67,7 @@ public class PhoneToWatchService extends Service {
                 //first, connect to the apiclient
                 mApiClient.connect();
                 //now that you're connected, send a massage with the cat name
-                sendMessage("/" + catName, catName);
+                sendMessage(SENATOR_INFO, senatorInfo);
             }
         }).start();
 
@@ -71,7 +81,7 @@ public class PhoneToWatchService extends Service {
 
     private void sendMessage( final String path, final String text ) {
         //one way to send message: start a new thread and call .await()
-        //see watchtophoneservice for another way to send a message
+        //see WatchToPhoneService for another way to send a message
         new Thread( new Runnable() {
             @Override
             public void run() {

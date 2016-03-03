@@ -14,8 +14,14 @@ public class SetLocationActivity extends AppCompatActivity {
     }
 
     public void useZipCode(View view) {
-        System.out.println("poop");
         Intent intent = new Intent(this, ListRepresentativesActivity.class);
+        intent.putExtra(ListRepresentativesActivity.LOCATION_KEY, 1);
+        startActivity(intent);
+    }
+
+    public void useCurrentLocation(View view) {
+        Intent intent = new Intent(this, ListRepresentativesActivity.class);
+        intent.putExtra(ListRepresentativesActivity.LOCATION_KEY, 0);
         startActivity(intent);
     }
 }

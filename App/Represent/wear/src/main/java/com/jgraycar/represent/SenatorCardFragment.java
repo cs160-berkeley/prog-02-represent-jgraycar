@@ -24,6 +24,8 @@ public class SenatorCardFragment extends CardFragment {
         bundle.putString("party", party);
 
         cf.setArguments(bundle);
+        cf.setContentPadding(0, 0, 0, 0);
+        cf.setCardMargins(0, 0, 0, 0);
         return cf;
     }
 

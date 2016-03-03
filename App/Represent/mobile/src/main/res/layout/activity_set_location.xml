@@ -65,10 +65,19 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_weight="2"
             android:text="Submit"
             android:onClick="useZipCode"
             android:id="@+id/useZipCode" />
     </LinearLayout>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="Use current location"
+        android:onClick="useCurrentLocation"
+        android:id="@+id/useCurrentLocation" />
 </LinearLayout>
