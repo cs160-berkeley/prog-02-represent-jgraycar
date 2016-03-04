@@ -10,10 +10,12 @@ class Senator {
     String website;
     String tweet;
     String party;
+    String[] committees;
+    String[] bills;
     int photoId;
 
     Senator(String name, String term, int photoId, String party, String email,
-            String website, String tweet) {
+            String website, String tweet, String[] committees, String[] bills) {
         this.name = name;
         this.term = term;
         this.photoId = photoId;
@@ -21,6 +23,8 @@ class Senator {
         this.website = website;
         this.tweet = tweet;
         this.party = party;
+        this.committees = committees;
+        this.bills = bills;
     }
 
     public int partyIconId() {

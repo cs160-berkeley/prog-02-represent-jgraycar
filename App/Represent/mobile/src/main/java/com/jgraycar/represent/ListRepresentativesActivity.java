@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,30 +34,32 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
 
     private void initializeData() {
         persons = new ArrayList<>();
+        String[] bills = getResources().getStringArray(R.array.bills_array);
+        String[] committees = getResources().getStringArray(R.array.committees_array);
 
         if (location == 0) {
             // Congress people for Alameda County, California
             persons.add(new Senator("Sen. Barbara Boxer", "1993 - 2016", R.drawable.barbara,
                     "Democrat", "senator@boxer.senate.gov", "www.boxer.senate.gov",
-                    getResources().getString(R.string.barb_tweet)));
+                    getResources().getString(R.string.barb_tweet), committees, bills));
             persons.add(new Senator("Sen. Dianne Feinstein", "1992 - 2016", R.drawable.dianne,
                     "Democrat", "senator@feinstein.senate.gov", "www.feinstein.senate.gov",
-                    getResources().getString(R.string.dianne_tweet)));
+                    getResources().getString(R.string.dianne_tweet), committees, bills));
             persons.add(new Senator("Rep. Barbara Lee", "2013 - 2016", R.drawable.lee,
                     "Democrat", "lee@house.gov", "lee.house.gov",
-                    getResources().getString(R.string.lee_tweet)));
+                    getResources().getString(R.string.lee_tweet), committees, bills));
         } else {
             // Congress people for Gorham, Maine
             persons.add(new Senator("Sen. Susan Collins", "1997 - 2016", R.drawable.susan,
                     "Republican", "senator@collins.senate.gov", "www.collins.senate.gov",
-                    getResources().getString(R.string.susan_tweet)));
+                    getResources().getString(R.string.susan_tweet), committees, bills));
             persons.add(new Senator("Sen. Angus King", "2013 - 2016", R.drawable.angus,
                     "Independent", "senator@king.senate.gov", "www.king.senate.gov",
-                    getResources().getString(R.string.angus_tweet)));
+                    getResources().getString(R.string.angus_tweet), committees, bills));
             persons.add(new Senator("Rep. Linda Sanborn", "2008 - 2016", R.drawable.lisa,
                     "Democrat", "linda.sanborn@legislature.maine.gov",
                     "legislature.maine.gov/housedems/sanbornl/index.html",
-                    getResources().getString(R.string.lisa_tweet)));
+                    getResources().getString(R.string.lisa_tweet), committees, bills));
 
         }
 
@@ -106,6 +109,24 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
         rv.setLayoutManager(llm);
         RVAdapter adapter = new RVAdapter(persons);
         rv.setAdapter(adapter);
+    }
+
+    public void goToDetailsView(View v) {
+        Senator senator = (Senator) v.getTag();
+
+        Intent intent = new Intent(this, SenatorDetailsActivity.class);
+        Bundle args = new Bundle();
+
+        args.putString(SenatorDetailsActivity.NAME_KEY, senator.name);
+        args.putString(SenatorDetailsActivity.TERM_KEY, senator.term);
+        args.putString(SenatorDetailsActivity.PARTY_KEY, senator.party);
+        args.putInt(SenatorDetailsActivity.PHOTO_KEY, senator.photoId);
+
+        args.putStringArray(SenatorDetailsActivity.COMMITTEES_KEY, senator.committees);
+        args.putStringArray(SenatorDetailsActivity.BILLS_KEY, senator.bills);
+
+        intent.putExtras(args);
+        startActivity(intent);
     }
 
     @Override

@@ -6,9 +6,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:supportsRtl="true">
-        <activity android:name=".SetLocationActivity"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".SetLocationActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
@@ -17,15 +18,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ListRepresentativesActivity"></activity>
+        <activity android:name=".ListRepresentativesActivity" />
+
         <service android:name=".PhoneToWatchService" />
         <!-- Listeners are special services that need to be declared like below, as BIND_LISTENER -->
-        <service android:name=".PhoneListenerService"
+        <service
+            android:name=".PhoneListenerService"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".SenatorDetailsActivity"
+            android:label="@string/title_activity_senator_details"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

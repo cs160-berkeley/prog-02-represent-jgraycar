@@ -26,6 +26,9 @@ public class ElectionFragment extends Fragment {
         } else {
             district.setText("Gorham, Maine");
         }
+
+        TextView obamaVotes = (TextView) v.findViewById(R.id.obamaVotes);
+        TextView romneyVotes = (TextView) v.findViewById(R.id.romneyVotes);
         return v;
     }
 

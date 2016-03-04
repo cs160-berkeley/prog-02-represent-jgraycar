@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,17 +47,23 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
 
     @Override
     public void onBindViewHolder(SenatorViewHolder senatorViewHolder, int i) {
+        Senator senator = senators.get(i);
+
         Drawable[] layers = new Drawable[2];
-        Bitmap bg = decodeSampledBitmapFromResource(parent.getResources(), senators.get(i).photoId, 155, 100);
+        Bitmap bg = decodeSampledBitmapFromResource(parent.getResources(), senator.photoId, 155, 100);
         layers[0] = new BitmapDrawable(parent.getResources(), bg);
-        layers[1] = ContextCompat.getDrawable(parent.getContext(), senators.get(i).partyIconId());
+        layers[1] = ContextCompat.getDrawable(parent.getContext(), senator.partyIconId());
         LayerDrawable layerDrawable = new LayerDrawable(layers);
         senatorViewHolder.senatorPhoto.setImageDrawable(layerDrawable);
-        senatorViewHolder.senatorName.setText(senators.get(i).name);
-        senatorViewHolder.senatorTerm.setText(senators.get(i).term);
-        senatorViewHolder.senatorWebsite.setText(senators.get(i).website);
-        senatorViewHolder.senatorEmail.setText(senators.get(i).email);
-        senatorViewHolder.senatorTweet.setText(senators.get(i).tweet);
+
+        senatorViewHolder.senatorName.setText(senator.name);
+        senatorViewHolder.senatorTerm.setText(senator.term);
+        senatorViewHolder.senatorWebsite.setText(senator.website);
+        senatorViewHolder.senatorEmail.setText(senator.email);
+        senatorViewHolder.senatorTweet.setText(senator.tweet);
+
+        senatorViewHolder.detailsButton.setTag(senator);
+        senatorViewHolder.senatorPhoto.setTag(senator);
     }
 
     @Override
@@ -72,6 +79,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
         TextView senatorWebsite;
         TextView senatorTweet;
         ImageView senatorPhoto;
+        Button detailsButton;
 
         SenatorViewHolder(View itemView) {
             super(itemView);
@@ -82,6 +90,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
             senatorEmail = (TextView)itemView.findViewById(R.id.senator_email);
             senatorWebsite = (TextView)itemView.findViewById(R.id.senator_website);
             senatorTweet = (TextView)itemView.findViewById(R.id.senator_tweet);
+            detailsButton = (Button)itemView.findViewById(R.id.detailsButton);
         }
     }
 
