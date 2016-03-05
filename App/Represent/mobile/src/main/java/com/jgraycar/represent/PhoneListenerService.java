@@ -12,14 +12,16 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * Created by joleary and noon on 2/19/16 at very late in the night. (early in the morning?)
  */
 public class PhoneListenerService extends WearableListenerService {
 
-//   WearableListenerServices don't need an iBinder or an onStartCommand: they just need an onMessageReceieved.
-private static final String DETAILS_PATH = "/show_details";
+    //   WearableListenerServices don't need an iBinder or an onStartCommand: they just need an onMessageReceieved.
+    private static final String DETAILS_PATH = "/show_details";
+    private static final String SHAKE_PATH = "/randomize_location";
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
@@ -44,8 +46,15 @@ private static final String DETAILS_PATH = "/show_details";
             //you need to add this flag since you're starting a new activity from a service
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+        } else if (messageEvent.getPath().equalsIgnoreCase(SHAKE_PATH)) {
+            System.out.println("watch shaken!");
+            Intent intent = new Intent(this, ListRepresentativesActivity.class);
+            intent.putExtra(ListRepresentativesActivity.LOCATION_KEY, 2);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            startActivity(intent);
         } else {
-            super.onMessageReceived( messageEvent );
+            super.onMessageReceived(messageEvent);
         }
 
     }

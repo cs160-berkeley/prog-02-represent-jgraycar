@@ -28,10 +28,14 @@ public class ElectionFragment extends Fragment {
             district.setText("Alameda County, CA");
             obamaVotes.setText("85%");
             romneyVotes.setText("15%");
-        } else {
+        } else if (location == 1){
             district.setText("Gorham, Maine");
             obamaVotes.setText("35%");
             romneyVotes.setText("65%");
+        } else {
+            district.setText("Calhoun, AL");
+            obamaVotes.setText("15%");
+            romneyVotes.setText("85%");
         }
         return v;
     }

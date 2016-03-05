@@ -33,6 +33,7 @@
         <activity
             android:name=".SenatorDetailsActivity"
             android:label="@string/title_activity_senator_details"
+            android:parentActivityName="com.jgraycar.represent.ListRepresentativesActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

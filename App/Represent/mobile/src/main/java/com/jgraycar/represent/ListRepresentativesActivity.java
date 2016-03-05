@@ -48,7 +48,7 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
             persons.add(new Senator("Rep. Barbara Lee", "2013 - 2016", R.drawable.lee,
                     "Democrat", "lee@house.gov", "lee.house.gov",
                     getResources().getString(R.string.lee_tweet), committees, bills));
-        } else {
+        } else if (location == 1){
             // Congress people for Gorham, Maine
             persons.add(new Senator("Sen. Susan Collins", "1997 - 2016", R.drawable.susan,
                     "Republican", "senator@collins.senate.gov", "www.collins.senate.gov",
@@ -60,7 +60,17 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
                     "Democrat", "linda.sanborn@legislature.maine.gov",
                     "legislature.maine.gov/housedems/sanbornl/index.html",
                     getResources().getString(R.string.lisa_tweet), committees, bills));
-
+        } else {
+            // Congress people for Calhoun, Alabama
+            persons.add(new Senator("Sen. Richard Shelby", "1987 - 2016", R.drawable.richard,
+                    "Republican", "senator@shelby.senate.gov", "www.shelby.senate.gov",
+                    getResources().getString(R.string.richard_tweet), committees, bills));
+            persons.add(new Senator("Sen. Jeff Sessions", "1997 - 2016", R.drawable.jeff,
+                    "Republican", "senator@session.senate.gov", "www.sessions.senate.gov",
+                    getResources().getString(R.string.jeff_tweet), committees, bills));
+            persons.add(new Senator("Rep. Mike Rogers", "2003 - 2016", R.drawable.mike,
+                    "Republican", "mikerogers@house.gov", "mikerogers.house.gov",
+                    getResources().getString(R.string.mike_tweet), committees, bills));
         }
 
         ArrayList<String> names = new ArrayList<>();

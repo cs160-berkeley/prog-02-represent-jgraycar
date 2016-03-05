@@ -55,6 +55,7 @@ public class SenatorDetailsActivity extends AppCompatActivity {
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(partyIconId);
+        fab.setPadding(0,0,0,0);
 
         TextView termTextView = (TextView) findViewById(R.id.senator_term);
         termTextView.setText(term);
@@ -66,7 +67,7 @@ public class SenatorDetailsActivity extends AppCompatActivity {
             TextView tv = new TextView(this);
             tv.setText(committee);
             tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-            tv.setPadding(0,0,0,75);
+            tv.setPadding(0,0,0,55);
             committeesLayout.addView(tv);
         }
 

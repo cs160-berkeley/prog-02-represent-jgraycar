@@ -36,8 +36,9 @@ public class SenatorCardFragment extends CardFragment {
         TextView senatorName = (TextView) v.findViewById(R.id.senator_name);
         TextView senatorParty = (TextView) v.findViewById(R.id.senator_party);
 
-        final Bundle args = getArguments();
-        senatorName.setText(args.getString("name"));
+        Bundle args = getArguments();
+        final String name = args.getString("name");
+        senatorName.setText(name);
 
         String party = args.getString("party");
         senatorParty.setText(party);
@@ -56,7 +57,8 @@ public class SenatorCardFragment extends CardFragment {
             @Override
             public void onClick(View v) {
                 Intent sendIntent = new Intent(((DisplaySenatorActivity) inflater.getContext()).getBaseContext(), WatchToPhoneService.class);
-                sendIntent.putExtras(args);
+                sendIntent.putExtra("name", name);
+                sendIntent.putExtra("path", "/show_details");
                 ((DisplaySenatorActivity) inflater.getContext()).getBaseContext().startService(sendIntent);
             }
         });
