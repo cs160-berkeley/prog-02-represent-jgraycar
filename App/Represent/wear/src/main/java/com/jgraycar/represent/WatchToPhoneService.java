@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -56,7 +57,7 @@ public class WatchToPhoneService extends Service implements GoogleApiClient.Conn
     }
 
     @Override //alternate method to connecting: no longer create this in a new thread, but as a callback
-    public void onConnected(Bundle bundle) {
+    public void onConnected(final Bundle bundle) {
         Log.d("T", "in onconnected");
         Wearable.NodeApi.getConnectedNodes(mWatchApiClient)
                 .setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
@@ -66,20 +67,53 @@ public class WatchToPhoneService extends Service implements GoogleApiClient.Conn
                         Log.d("T", "found nodes");
                         //when we find a connected node, we populate the list declared above
                         //finally, we can send a message
-                        sendMessage("/send_toast", "Good job!");
-                        Log.d("T", "sent");
+                        //sendMessage("/open_details", bundle.getString("name"));
                     }
                 });
+    }
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Bundle extras = intent.getExtras();
+
+        final String name = extras.getString("name");
+        // Send the message with the cat name
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //first, connect to the apiclient
+                mWatchApiClient.connect();
+                //now that you're connected, send a massage with the cat name
+                System.out.println("in thread");
+                sendMessage("/show_details", name);
+            }
+        }).start();
+
+        return START_STICKY;
     }
 
     @Override //we need this to implement GoogleApiClient.ConnectionsCallback
     public void onConnectionSuspended(int i) {}
 
     private void sendMessage(final String path, final String text ) {
-        for (Node node : nodes) {
-            Wearable.MessageApi.sendMessage(
-                    mWatchApiClient, node.getId(), path, text.getBytes());
-        }
+        System.out.println("sending message");
+        new Thread( new Runnable() {
+            @Override
+            public void run() {
+                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes( mWatchApiClient ).await();
+                for(Node node : nodes.getNodes()) {
+                    //we find 'nodes', which are nearby bluetooth devices (aka emulators)
+                    //send a message for each of these nodes (just one, for an emulator)
+                    Log.d("T", "sending to path: " + path);
+                    Log.d("T", "sending message: " + text);
+                    MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
+                            mWatchApiClient, node.getId(), path, text.getBytes() ).await();
+                    //4 arguments: api client, the node ID, the path (for the listener to parse),
+                    //and the message itself (you need to convert it to bytes.)
+                }
+            }
+        }).start();
     }
 
 }

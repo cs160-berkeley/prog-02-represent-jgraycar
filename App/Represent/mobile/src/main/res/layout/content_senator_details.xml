@@ -6,12 +6,55 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.jgraycar.represent.SenatorDetailsActivity"
+    android:layout_margin="@dimen/activity_horizontal_margin"
     tools:showIn="@layout/activity_senator_details">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1970 - 2016"
+            android:id="@+id/senator_term"
+            android:textSize="20dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:layout_marginTop="15dp"
+            android:textColor="#000"
+            android:text="Current Committees"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/committees_layout"
+            ></LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:textColor="#000"
+            android:textSize="25sp"
+            android:text="Supported Bills"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/bills_layout"
+            ></LinearLayout>
+
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

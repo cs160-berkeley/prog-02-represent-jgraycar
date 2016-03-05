@@ -2,11 +2,16 @@ package com.jgraycar.represent;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class SenatorDetailsActivity extends AppCompatActivity {
     protected static final String NAME_KEY = "com.jgraycar.represent.name";
@@ -46,7 +51,34 @@ public class SenatorDetailsActivity extends AppCompatActivity {
                 partyIconId = R.drawable.independent_icon;
         }
 
+        setTitle(name);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(partyIconId);
+
+        TextView termTextView = (TextView) findViewById(R.id.senator_term);
+        termTextView.setText(term);
+
+        LinearLayout committeesLayout = (LinearLayout) findViewById(R.id.committees_layout);
+        LinearLayout billsLayout = (LinearLayout) findViewById(R.id.bills_layout);
+
+        for (String committee : committees) {
+            TextView tv = new TextView(this);
+            tv.setText(committee);
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+            tv.setPadding(0,0,0,75);
+            committeesLayout.addView(tv);
+        }
+
+        for (String bill : bills) {
+            TextView tv = new TextView(this);
+            tv.setText(bill);
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+            tv.setPadding(0,0,0,75);
+            billsLayout.addView(tv);
+        }
+
+        AppBarLayout appBar = (AppBarLayout) findViewById(R.id.app_bar);
+        appBar.setBackgroundResource(photoId);
     }
 }

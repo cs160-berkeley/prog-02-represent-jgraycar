@@ -26,7 +26,7 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
 
     RecyclerView rv;
     private int location;
-    private List<Senator> persons;
+    protected static List<Senator> persons;
     private GoogleApiClient mGoogleApiClient;
     protected static final String LOCATION_KEY = "com.jgraycar.represent.location";
     protected static final String NAMES_KEY = "com.jgraycar.represent.names";
@@ -127,6 +127,15 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
 
         intent.putExtras(args);
         startActivity(intent);
+    }
+
+    public static Senator senatorWithName(String name) {
+        for (Senator senator : persons) {
+            if (name.equals(senator.name)) {
+                return senator;
+            }
+        }
+        return null;
     }
 
     @Override

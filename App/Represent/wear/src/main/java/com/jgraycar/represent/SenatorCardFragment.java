@@ -1,5 +1,6 @@
 package com.jgraycar.represent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.CardFragment;
 import android.view.LayoutInflater;
@@ -30,7 +31,7 @@ public class SenatorCardFragment extends CardFragment {
     }
 
     @Override
-    public View onCreateContentView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateContentView (final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.senator_card_view, container, false);
         TextView senatorName = (TextView) v.findViewById(R.id.senator_name);
         TextView senatorParty = (TextView) v.findViewById(R.id.senator_party);
@@ -54,7 +55,9 @@ public class SenatorCardFragment extends CardFragment {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(args.getString("name"));
+                Intent sendIntent = new Intent(((DisplaySenatorActivity) inflater.getContext()).getBaseContext(), WatchToPhoneService.class);
+                sendIntent.putExtras(args);
+                ((DisplaySenatorActivity) inflater.getContext()).getBaseContext().startService(sendIntent);
             }
         });
 

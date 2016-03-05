@@ -19,28 +19,31 @@ import java.nio.charset.StandardCharsets;
 public class PhoneListenerService extends WearableListenerService {
 
 //   WearableListenerServices don't need an iBinder or an onStartCommand: they just need an onMessageReceieved.
-private static final String TOAST = "/send_toast";
+private static final String DETAILS_PATH = "/show_details";
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         Log.d("T", "in PhoneListenerService, got: " + messageEvent.getPath());
-        if( messageEvent.getPath().equalsIgnoreCase(TOAST) ) {
+        if (messageEvent.getPath().equalsIgnoreCase(DETAILS_PATH)) {
 
-            // Value contains the String we sent over in WatchToPhoneService, "good job"
-            String value = new String(messageEvent.getData(), StandardCharsets.UTF_8);
+            String name = new String(messageEvent.getData(), StandardCharsets.UTF_8);
+            Log.d("T", "received name: " + name);
+            Senator senator = ListRepresentativesActivity.senatorWithName(name);
 
-            // Make a toast with the String
-            Context context = getApplicationContext();
-            int duration = Toast.LENGTH_SHORT;
+            Intent intent = new Intent(this, SenatorDetailsActivity.class);
+            Bundle args = new Bundle();
 
-            Toast toast = Toast.makeText(context, value, duration);
-            toast.show();
+            args.putString(SenatorDetailsActivity.NAME_KEY, senator.name);
+            args.putString(SenatorDetailsActivity.TERM_KEY, senator.term);
+            args.putInt(SenatorDetailsActivity.PHOTO_KEY, senator.photoId);
+            args.putString(SenatorDetailsActivity.PARTY_KEY, senator.party);
+            args.putStringArray(SenatorDetailsActivity.COMMITTEES_KEY, senator.committees);
+            args.putStringArray(SenatorDetailsActivity.BILLS_KEY, senator.bills);
 
-            // so you may notice this crashes the phone because it's
-            //''sending message to a Handler on a dead thread''... that's okay. but don't do this.
-            // replace sending a toast with, like, starting a new activity or something.
-            // who said skeleton code is untouchable? #breakCSconceptions
-
+            intent.putExtras(args);
+            //you need to add this flag since you're starting a new activity from a service
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         } else {
             super.onMessageReceived( messageEvent );
         }

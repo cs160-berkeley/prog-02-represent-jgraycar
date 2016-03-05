@@ -1,6 +1,6 @@
 <android.support.wearable.view.BoxInsetLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#234123"
+    android:background="@drawable/wear_bg"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     >

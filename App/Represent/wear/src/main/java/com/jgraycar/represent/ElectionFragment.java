@@ -20,15 +20,19 @@ public class ElectionFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_election, container, false);
         TextView district = (TextView) v.findViewById(R.id.districtTextView);
-        int location = getArguments().getInt("location");
-        if (location == 0) {
-            district.setText("Alameda County, CA");
-        } else {
-            district.setText("Gorham, Maine");
-        }
-
         TextView obamaVotes = (TextView) v.findViewById(R.id.obamaVotes);
         TextView romneyVotes = (TextView) v.findViewById(R.id.romneyVotes);
+        int location = getArguments().getInt("location");
+
+        if (location == 0) {
+            district.setText("Alameda County, CA");
+            obamaVotes.setText("85%");
+            romneyVotes.setText("15%");
+        } else {
+            district.setText("Gorham, Maine");
+            obamaVotes.setText("35%");
+            romneyVotes.setText("65%");
+        }
         return v;
     }
 

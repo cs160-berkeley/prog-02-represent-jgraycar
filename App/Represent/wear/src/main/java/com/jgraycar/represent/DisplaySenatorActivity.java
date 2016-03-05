@@ -36,7 +36,12 @@ public class DisplaySenatorActivity extends Activity {
     protected static final String LOCATION_KEY = "com.jgraycar.represent.location";
 
     private void initializeData(String[] names, String[] parties) {
-        int[] pictures = new int[] { R.drawable.barbara, R.drawable.mitch, R.drawable.bernie };
+        int[] pictures;
+        if (location == 0) {
+            pictures = new int[] { R.drawable.barbara, R.drawable.dianne, R.drawable.lee };
+        } else {
+            pictures = new int[] { R.drawable.susan, R.drawable.angus, R.drawable.lisa };
+        }
         senators = new ArrayList<>();
 
         for (int i = 0; i < names.length; i += 1) {
