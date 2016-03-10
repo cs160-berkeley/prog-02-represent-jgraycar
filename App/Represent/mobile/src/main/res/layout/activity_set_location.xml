@@ -37,47 +37,64 @@
         android:paddingBottom="80dp"
         android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Please enter your zipcode:"
-        android:id="@+id/textView4"
-        android:layout_gravity="center_horizontal" />
-
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/locationEntry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingRight="20dp"
-        android:paddingLeft="20dp"
-        android:layout_gravity="center_horizontal">
-
-        <EditText
-            android:layout_width="0dp"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/zipCodeEditText"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Please enter your zipcode:"
+            android:id="@+id/textView4"
             android:layout_gravity="center_horizontal" />
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:layout_gravity="center_horizontal">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/zipCodeEditText"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_weight="2"
+                android:text="Submit"
+                android:onClick="useZipCode"
+                android:id="@+id/useZipCode" />
+        </LinearLayout>
+
         <Button
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_weight="2"
-            android:text="Submit"
-            android:onClick="useZipCode"
-            android:id="@+id/useZipCode" />
+            android:text="Use current location"
+            android:onClick="useCurrentLocation"
+            android:id="@+id/useCurrentLocation" />
+
     </LinearLayout>
 
-    <Button
+    <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_height="wrap_content"
-        style="?android:attr/borderlessButtonStyle"
-        android:text="Use current location"
-        android:onClick="useCurrentLocation"
-        android:id="@+id/useCurrentLocation" />
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        />
 </LinearLayout>

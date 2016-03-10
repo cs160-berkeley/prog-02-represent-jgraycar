@@ -1,5 +1,6 @@
 package com.jgraycar.represent;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,14 +10,20 @@ import android.graphics.drawable.LayerDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.*;
+import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.tweetui.*;
+import io.fabric.sdk.android.Fabric;
 
 import java.util.List;
 
@@ -25,11 +32,13 @@ import java.util.List;
  */
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>{
 
+    Context context;
     List<Senator> senators;
     ViewGroup parent;
 
-    RVAdapter(List<Senator> senators){
+    RVAdapter(Context context, List<Senator> senators){
         this.senators = senators;
+        this.context = context;
     }
 
     @Override
@@ -46,7 +55,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(SenatorViewHolder senatorViewHolder, int i) {
+    public void onBindViewHolder(final SenatorViewHolder senatorViewHolder, int i) {
         Senator senator = senators.get(i);
 
         Drawable[] layers = new Drawable[2];
@@ -60,10 +69,25 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
         senatorViewHolder.senatorTerm.setText(senator.term);
         senatorViewHolder.senatorWebsite.setText(senator.website);
         senatorViewHolder.senatorEmail.setText(senator.email);
-        senatorViewHolder.senatorTweet.setText(senator.tweet);
 
         senatorViewHolder.detailsButton.setTag(senator);
         senatorViewHolder.senatorPhoto.setTag(senator);
+
+        // TODO: Base this Tweet ID on some data from elsewhere in your app
+        long tweetId = 631879971628183552L;
+        TweetUtils.loadTweet(tweetId, new Callback<Tweet>() {
+            @Override
+            public void success(Result<Tweet> result) {
+                TweetView tweetView = new TweetView(context, result.data);
+                senatorViewHolder.senatorTweet.addView(tweetView);
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                Log.d("TwitterKit", "Load Tweet failure", exception);
+            }
+        });
+
     }
 
     @Override
@@ -77,7 +101,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
         TextView senatorTerm;
         TextView senatorEmail;
         TextView senatorWebsite;
-        TextView senatorTweet;
+        LinearLayout senatorTweet;
         ImageView senatorPhoto;
         Button detailsButton;
 
@@ -89,7 +113,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
             senatorPhoto = (ImageView)itemView.findViewById(R.id.senator_photo);
             senatorEmail = (TextView)itemView.findViewById(R.id.senator_email);
             senatorWebsite = (TextView)itemView.findViewById(R.id.senator_website);
-            senatorTweet = (TextView)itemView.findViewById(R.id.senator_tweet);
+            senatorTweet = (LinearLayout)itemView.findViewById(R.id.senator_tweet);
             detailsButton = (Button)itemView.findViewById(R.id.detailsButton);
         }
     }

@@ -8,29 +8,31 @@ class Senator {
     String term;
     String email;
     String website;
-    String tweet;
+    String twitterId;
+    String bioguideId;
     String party;
     String[] committees;
     String[] bills;
     int photoId;
 
-    Senator(String name, String term, int photoId, String party, String email,
-            String website, String tweet, String[] committees, String[] bills) {
+    Senator(String name, String term, String party, String email,
+            String website, String twitterId, String bioguideId) {
         this.name = name;
         this.term = term;
-        this.photoId = photoId;
+        this.photoId = R.drawable.barbara;
         this.email = email;
         this.website = website;
-        this.tweet = tweet;
+        this.twitterId = twitterId;
+        this.bioguideId = bioguideId;
         this.party = party;
-        this.committees = committees;
-        this.bills = bills;
+        this.committees = new String[0];
+        this.bills = new String[0];
     }
 
     public int partyIconId() {
-        if (party.equalsIgnoreCase("democrat")) {
+        if (party.equalsIgnoreCase("D")) {
             return R.drawable.democrat;
-        } else if (party.equalsIgnoreCase("republican")) {
+        } else if (party.equalsIgnoreCase("R")) {
             return R.drawable.republican;
         }
         return R.drawable.independent;

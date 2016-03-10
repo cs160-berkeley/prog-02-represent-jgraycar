@@ -12,85 +12,96 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:padding="10dp"
         >
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="155dp"
-            android:id="@+id/senator_photo"
-            android:onClick="goToDetailsView"
-            android:scaleType="centerCrop"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="16dp"
-            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/senator_name"
-            android:layout_marginBottom="5dp"
-            android:layout_toEndOf="@+id/senator_photo"
+            android:layout_marginBottom="12dp"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:textColor="#000"
-            android:textSize="18sp"
+            android:text="Sen. Example Example"
+            android:textSize="24sp"
             />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="25dp"
-            android:id="@+id/senator_term"
-            android:textSize="14sp"
-            android:layout_toEndOf="@+id/senator_photo"
+        <RelativeLayout
+            android:id="@+id/senator_info_layout"
             android:layout_below="@+id/senator_name"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="19dp"
-            android:layout_height="19dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="17dp"
-            android:id="@+id/emailImageView"
-            android:src="@drawable/email"
-            android:layout_toEndOf="@+id/senator_photo"
-            android:layout_below="@+id/senator_term" />
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/barbara"
+                android:id="@+id/senator_photo"
+                android:onClick="goToDetailsView"
+                android:scaleType="centerCrop"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="16dp"
+                />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/senator_email"
-            android:textColor="@color/linkColor"
-            android:text="poop@caltaiko.org"
-            android:layout_toEndOf="@+id/emailImageView"
-            android:layout_below="@+id/senator_term"
-            />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/senator_term"
+                android:textSize="16sp"
+                android:text="2014-2016"
+                android:layout_toEndOf="@+id/senator_photo"
+                android:layout_alignParentTop="true"
+                />
 
-        <ImageView
-            android:layout_width="19dp"
-            android:layout_height="19dp"
-            android:layout_marginEnd="12dp"
-            android:id="@+id/websiteImageView"
-            android:src="@drawable/website"
-            android:layout_toEndOf="@+id/senator_photo"
-            android:layout_below="@+id/emailImageView" />
+            <ImageView
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="14dp"
+                android:id="@+id/emailImageView"
+                android:src="@drawable/email"
+                android:layout_toEndOf="@+id/senator_photo"
+                android:layout_below="@+id/senator_term" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/senator_website"
-            android:textColor="@color/linkColor"
-            android:text="http://poop.senate.gov"
-            android:layout_toEndOf="@+id/websiteImageView"
-            android:layout_below="@+id/emailImageView"
-            />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/senator_email"
+                android:textColor="@color/linkColor"
+                android:text="poop@caltaiko.org"
+                android:layout_toEndOf="@+id/emailImageView"
+                android:layout_below="@+id/senator_term"
+                />
+
+            <ImageView
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:layout_marginEnd="12dp"
+                android:id="@+id/websiteImageView"
+                android:src="@drawable/website"
+                android:layout_toEndOf="@+id/senator_photo"
+                android:layout_below="@+id/emailImageView" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/senator_website"
+                android:textColor="@color/linkColor"
+                android:text="http://poop.senate.gov"
+                android:layout_toEndOf="@+id/websiteImageView"
+                android:layout_below="@+id/emailImageView"
+                />
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/senator_photo"
+            android:layout_below="@+id/senator_info_layout"
             android:layout_alignParentStart="true">
 
             <ImageView
@@ -122,18 +133,13 @@
                 android:layout_alignParentTop="true"
                 />
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
-                android:textColor="#000"
-                android:paddingTop="10dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
                 android:id="@+id/senator_tweet"
                 android:layout_below="@+id/twitterIcon"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:orientation="vertical"></LinearLayout>
 
             <Button
                 android:layout_width="wrap_content"

@@ -53,11 +53,11 @@ public class PhoneToWatchService extends Service {
 
         String[] names = extras.getStringArrayList(ListRepresentativesActivity.NAMES_KEY).toArray(new String[0]);
         String[] parties = extras.getStringArrayList(ListRepresentativesActivity.PARTIES_KEY).toArray(new String[0]);
-        int location = extras.getInt(ListRepresentativesActivity.LOCATION_KEY);
+        String location = extras.getString(ListRepresentativesActivity.LOCATION_KEY);
 
         String namePart = TextUtils.join(":", names);
         String partyPart = TextUtils.join(":", parties);
-        String[] parts = new String[] { namePart, partyPart, String.valueOf(location) };
+        String[] parts = new String[] { namePart, partyPart, location };
         final String senatorInfo = TextUtils.join("+", parts);
 
         // Send the message with the cat name
