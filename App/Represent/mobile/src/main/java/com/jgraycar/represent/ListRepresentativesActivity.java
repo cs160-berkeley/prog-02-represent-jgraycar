@@ -16,8 +16,19 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.AppSession;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.User;
+import com.twitter.sdk.android.tweetui.TweetUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +52,7 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
 
     RecyclerView rv;
     private String location;
+    protected ImageLoader imageLoader;
     protected static List<Senator> persons;
     private GoogleApiClient mGoogleApiClient;
     protected static final String LOCATION_KEY = "com.jgraycar.represent.location";
@@ -63,17 +75,16 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoader.getInstance().init(config);
+        imageLoader = ImageLoader.getInstance();
+
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
         setLocation(extras.getInt(QUERY_TYPE_KEY), extras.getString(LOCATION_KEY));
         initializeData(extras.getString(DATA_KEY));
 
-        rv = (RecyclerView)findViewById(R.id.rv);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        rv.setLayoutManager(llm);
-        RVAdapter adapter = new RVAdapter(this, persons);
-        rv.setAdapter(adapter);
     }
 
     private void setLocation(int queryType, String loc) {
@@ -179,6 +190,8 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
             return;
         }
 
+        getTwitterInfo();
+
         Intent sendIntent = new Intent(getBaseContext(), PhoneToWatchService.class);
         Bundle extras = new Bundle();
 
@@ -190,6 +203,58 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
         startService(sendIntent);
     }
 
+    public void getTwitterInfo() {
+        TwitterCore.getInstance().logInGuest(new Callback<AppSession>() {
+            @Override
+            public void success(Result<AppSession> result) {
+                MyTwitterApiClient client = new MyTwitterApiClient(result.data);
+                for (final Senator person : persons) {
+                    client.getUserDataService().show(person.twitterId, new Callback<User>() {
+                        @Override
+                        public void success(Result<User> result) {
+                            Log.d("T", "Twitter profile pic: " + result.data.profileImageUrl);
+                            person.photoUrl = result.data.profileImageUrl.replace("_normal", "");
+
+                            if (readyToConstructCards()) {
+                                constructCards();
+                            }
+                        }
+
+                        @Override
+                        public void failure(TwitterException e) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void failure(TwitterException e) {
+                constructCards();
+            }
+        });
+    }
+
+    private boolean readyToConstructCards() {
+        for (Senator senator : persons) {
+            if (senator.photoUrl.equals("")) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void constructCards() {
+        if (rv == null) {
+            rv = (RecyclerView)findViewById(R.id.rv);
+            LinearLayoutManager llm = new LinearLayoutManager(this);
+            rv.setLayoutManager(llm);
+            RVAdapter adapter = new RVAdapter(this, persons);
+            rv.setAdapter(adapter);
+        }
+    }
+
     public void goToDetailsView(View v) {
         Senator senator = (Senator) v.getTag();
 
@@ -199,7 +264,7 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
         args.putString(SenatorDetailsActivity.NAME_KEY, senator.name);
         args.putString(SenatorDetailsActivity.TERM_KEY, senator.term);
         args.putString(SenatorDetailsActivity.PARTY_KEY, senator.party);
-        args.putInt(SenatorDetailsActivity.PHOTO_KEY, senator.photoId);
+        args.putString(SenatorDetailsActivity.PHOTO_KEY, senator.photoUrl);
 
         args.putStringArray(SenatorDetailsActivity.COMMITTEES_KEY, senator.committees);
         args.putStringArray(SenatorDetailsActivity.BILLS_KEY, senator.bills);

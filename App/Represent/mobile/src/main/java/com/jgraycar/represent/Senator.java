@@ -14,6 +14,7 @@ class Senator {
     String[] committees;
     String[] bills;
     int photoId;
+    String photoUrl;
 
     Senator(String name, String term, String party, String email,
             String website, String twitterId, String bioguideId) {
@@ -27,6 +28,7 @@ class Senator {
         this.party = party;
         this.committees = new String[0];
         this.bills = new String[0];
+        this.photoUrl = "";
     }
 
     public int partyIconId() {

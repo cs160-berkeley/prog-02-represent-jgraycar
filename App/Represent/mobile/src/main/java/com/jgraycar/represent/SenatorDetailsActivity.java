@@ -1,6 +1,8 @@
 package com.jgraycar.represent;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 public class SenatorDetailsActivity extends AppCompatActivity {
     protected static final String NAME_KEY = "com.jgraycar.represent.name";
@@ -28,12 +34,16 @@ public class SenatorDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoader.getInstance().init(config);
+        ImageLoader imageLoader = ImageLoader.getInstance();
+
         Intent intent = getIntent();
         Bundle args = intent.getExtras();
 
         String name = args.getString(NAME_KEY);
         String term = args.getString(TERM_KEY);
-        int photoId = args.getInt(PHOTO_KEY);
+        String photoUrl = args.getString(PHOTO_KEY);
         String party = args.getString(PARTY_KEY);
         String[] committees = args.getStringArray(COMMITTEES_KEY);
         String[] bills = args.getStringArray(BILLS_KEY);
@@ -41,10 +51,10 @@ public class SenatorDetailsActivity extends AppCompatActivity {
         int partyIconId;
 
         switch (party) {
-            case "Democrat":
+            case "D":
                 partyIconId = R.drawable.democrat_icon;
                 break;
-            case "Republican":
+            case "R":
                 partyIconId = R.drawable.republican_icon;
                 break;
             default:
@@ -79,7 +89,14 @@ public class SenatorDetailsActivity extends AppCompatActivity {
             billsLayout.addView(tv);
         }
 
-        AppBarLayout appBar = (AppBarLayout) findViewById(R.id.app_bar);
-        appBar.setBackgroundResource(photoId);
+        final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.app_bar);
+        imageLoader.loadImage(photoUrl, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                BitmapDrawable ob = new BitmapDrawable(getResources(), loadedImage);
+                appBar.setBackground(ob);
+            }
+
+        });
     }
 }
