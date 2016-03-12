@@ -27,7 +27,7 @@ public class WatchListenerService extends WearableListenerService {
             String[] parts = information.split("\\+");
             String[] names = parts[0].split(":");
             String[] parties = parts[1].split(":");
-            int location = Integer.parseInt(parts[2]);
+            String location = parts[2];
 
             Intent intent = new Intent(this, DisplaySenatorActivity.class );
 
@@ -37,7 +37,7 @@ public class WatchListenerService extends WearableListenerService {
             Bundle extras = new Bundle();
             extras.putStringArray(DisplaySenatorActivity.NAMES_KEY, names);
             extras.putStringArray(DisplaySenatorActivity.PARTIES_KEY, parties);
-            extras.putInt(DisplaySenatorActivity.LOCATION_KEY, location);
+            extras.putString(DisplaySenatorActivity.LOCATION_KEY, location);
 
             intent.putExtras(extras);
             startActivity(intent);

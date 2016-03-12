@@ -56,6 +56,7 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
     private String state;
     private String county;
     private boolean personsLoaded;
+    private boolean sentToWatch;
     private double obamaVote;
     private double romneyVote;
     protected ImageLoader imageLoader;
@@ -97,6 +98,7 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
         Bundle extras = intent.getExtras();
 
         personsLoaded = false;
+        sentToWatch = false;
         obamaVote = -1;
         romneyVote = -1;
 
@@ -338,7 +340,8 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
     }
 
     private void sendToWatch() {
-        if (personsLoaded && obamaVote >= 0 && romneyVote >= 0) {
+        if (personsLoaded && obamaVote >= 0 && romneyVote >= 0 && !sentToWatch) {
+            sentToWatch = true;
             Log.d("Watch", "Sending to watch");
             Log.d("Watch", "Obama: " + String.valueOf(obamaVote));
             Log.d("Watch", "Romney: " + String.valueOf(romneyVote));

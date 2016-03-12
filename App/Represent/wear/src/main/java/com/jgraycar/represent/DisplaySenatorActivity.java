@@ -33,7 +33,7 @@ import java.util.ArrayList;
 public class DisplaySenatorActivity extends Activity implements SensorEventListener {
 
     public ArrayList<Senator> senators;
-    public int location;
+    public String location;
 
     private FragmentGridPagerAdapter adapter;
     private SensorManager mSensorManager;
@@ -49,13 +49,7 @@ public class DisplaySenatorActivity extends Activity implements SensorEventListe
 
     private void initializeData(String[] names, String[] parties) {
         int[] pictures;
-        if (location == 0) {
-            pictures = new int[] { R.drawable.barbara, R.drawable.dianne, R.drawable.lee };
-        } else if (location == 1) {
-            pictures = new int[] { R.drawable.susan, R.drawable.angus, R.drawable.lisa };
-        } else {
-            pictures = new int[] { R.drawable.richard, R.drawable.jeff, R.drawable.mike };
-        }
+        pictures = new int[] { R.drawable.barbara, R.drawable.dianne, R.drawable.lee };
         senators = new ArrayList<>();
 
         for (int i = 0; i < names.length; i += 1) {
@@ -83,7 +77,7 @@ public class DisplaySenatorActivity extends Activity implements SensorEventListe
         if (extras != null) {
             names = extras.getStringArray(NAMES_KEY);
             parties = extras.getStringArray(PARTIES_KEY);
-            location = extras.getInt(LOCATION_KEY);
+            location = extras.getString(LOCATION_KEY);
         }
 
         final GridViewPager pager = (GridViewPager) findViewById(R.id.pager);

@@ -22,29 +22,20 @@ public class ElectionFragment extends Fragment {
         TextView district = (TextView) v.findViewById(R.id.districtTextView);
         TextView obamaVotes = (TextView) v.findViewById(R.id.obamaVotes);
         TextView romneyVotes = (TextView) v.findViewById(R.id.romneyVotes);
-        int location = getArguments().getInt("location");
+        String location = getArguments().getString("location");
 
-        if (location == 0) {
-            district.setText("Alameda County, CA");
-            obamaVotes.setText("85%");
-            romneyVotes.setText("15%");
-        } else if (location == 1){
-            district.setText("Gorham, Maine");
-            obamaVotes.setText("35%");
-            romneyVotes.setText("65%");
-        } else {
-            district.setText("Calhoun, AL");
-            obamaVotes.setText("15%");
-            romneyVotes.setText("85%");
-        }
+        String[] parts = location.split(":");
+        district.setText("Calhoun, AL");
+        obamaVotes.setText("15%");
+        romneyVotes.setText("85%");
         return v;
     }
 
-    public static ElectionFragment create(int location) {
+    public static ElectionFragment create(String location) {
         ElectionFragment ef = new ElectionFragment();
 
         Bundle args = new Bundle();
-        args.putInt("location", location);
+        args.putString("location", location);
 
         ef.setArguments(args);
         return ef;

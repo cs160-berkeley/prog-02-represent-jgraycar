@@ -13,6 +13,8 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 /**
@@ -55,10 +57,13 @@ public class PhoneToWatchService extends Service {
             String[] names = extras.getStringArrayList(ListRepresentativesActivity.NAMES_KEY).toArray(new String[0]);
             String[] parties = extras.getStringArrayList(ListRepresentativesActivity.PARTIES_KEY).toArray(new String[0]);
             String location = extras.getString(ListRepresentativesActivity.LOCATION_KEY);
+            double obamaVotes = extras.getDouble(ListRepresentativesActivity.OBAMA_KEY);
+            double romneyVotes = extras.getDouble(ListRepresentativesActivity.ROMNEY_KEY);
 
             String namePart = TextUtils.join(":", names);
             String partyPart = TextUtils.join(":", parties);
-            String[] parts = new String[]{namePart, partyPart, location};
+            String locationPart = TextUtils.join(":", new String[] { location, String.valueOf(obamaVotes), String.valueOf(romneyVotes) });
+            String[] parts = new String[]{ namePart, partyPart, locationPart };
             final String senatorInfo = TextUtils.join("+", parts);
 
             // Send the message with the cat name

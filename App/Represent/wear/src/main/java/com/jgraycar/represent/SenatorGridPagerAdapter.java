@@ -34,7 +34,7 @@ public class SenatorGridPagerAdapter extends FragmentGridPagerAdapter {
             ((CardFragment) fragment).setContentPadding(0, 0, 0, 0);
             ((CardFragment) fragment).setCardMargins(0, 0, 0, 0);
         } else {
-            int location = ((DisplaySenatorActivity) mContext).location;
+            String location = ((DisplaySenatorActivity) mContext).location;
             fragment = ElectionFragment.create(location);
         }
 
