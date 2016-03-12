@@ -49,7 +49,6 @@ class RetrieveHTTPResponseTask extends AsyncTask<URL, Void, String> {
     }
 
     protected void onPostExecute(String response) {
-        Log.d("T", "Response: " + response);
         delegate.processFinish(response);
     }
 }

@@ -30,16 +30,11 @@ public class PhoneListenerService extends WearableListenerService {
 
             String name = new String(messageEvent.getData(), StandardCharsets.UTF_8);
             Log.d("T", "received name: " + name);
-            Senator senator = ListRepresentativesActivity.senatorWithName(name);
 
             Intent intent = new Intent(this, SenatorDetailsActivity.class);
             Bundle args = new Bundle();
 
-            args.putString(SenatorDetailsActivity.NAME_KEY, senator.name);
-            args.putString(SenatorDetailsActivity.TERM_KEY, senator.term);
-            args.putString(SenatorDetailsActivity.PARTY_KEY, senator.party);
-            args.putStringArray(SenatorDetailsActivity.COMMITTEES_KEY, senator.committees);
-            args.putStringArray(SenatorDetailsActivity.BILLS_KEY, senator.bills);
+            args.putString(SenatorDetailsActivity.NAME_KEY, name);
 
             intent.putExtras(args);
             //you need to add this flag since you're starting a new activity from a service

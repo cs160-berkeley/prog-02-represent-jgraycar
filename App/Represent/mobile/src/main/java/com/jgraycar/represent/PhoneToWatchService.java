@@ -49,27 +49,29 @@ public class PhoneToWatchService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Bundle extras = intent.getExtras();
+        if (intent != null && intent.getExtras() != null) {
+            Bundle extras = intent.getExtras();
 
-        String[] names = extras.getStringArrayList(ListRepresentativesActivity.NAMES_KEY).toArray(new String[0]);
-        String[] parties = extras.getStringArrayList(ListRepresentativesActivity.PARTIES_KEY).toArray(new String[0]);
-        String location = extras.getString(ListRepresentativesActivity.LOCATION_KEY);
+            String[] names = extras.getStringArrayList(ListRepresentativesActivity.NAMES_KEY).toArray(new String[0]);
+            String[] parties = extras.getStringArrayList(ListRepresentativesActivity.PARTIES_KEY).toArray(new String[0]);
+            String location = extras.getString(ListRepresentativesActivity.LOCATION_KEY);
 
-        String namePart = TextUtils.join(":", names);
-        String partyPart = TextUtils.join(":", parties);
-        String[] parts = new String[] { namePart, partyPart, location };
-        final String senatorInfo = TextUtils.join("+", parts);
+            String namePart = TextUtils.join(":", names);
+            String partyPart = TextUtils.join(":", parties);
+            String[] parts = new String[]{namePart, partyPart, location};
+            final String senatorInfo = TextUtils.join("+", parts);
 
-        // Send the message with the cat name
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //first, connect to the apiclient
-                mApiClient.connect();
-                //now that you're connected, send a massage with the cat name
-                sendMessage(SENATOR_INFO, senatorInfo);
-            }
-        }).start();
+            // Send the message with the cat name
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //first, connect to the apiclient
+                    mApiClient.connect();
+                    //now that you're connected, send a massage with the cat name
+                    sendMessage(SENATOR_INFO, senatorInfo);
+                }
+            }).start();
+        }
 
         return START_STICKY;
     }

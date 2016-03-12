@@ -73,7 +73,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
         senatorViewHolder.detailsButton.setTag(senator);
         senatorViewHolder.senatorPhoto.setTag(senator);
 
-        senatorViewHolder.senatorTweet.addView(senator.tweetView);
+        if (senator.tweetView != null) {
+            ViewGroup parent = (ViewGroup) senator.tweetView.getParent();
+            if (parent != null) {
+                parent.removeView(senator.tweetView);
+            }
+            senatorViewHolder.senatorTweet.addView(senator.tweetView);
+        }
     }
 
     @Override

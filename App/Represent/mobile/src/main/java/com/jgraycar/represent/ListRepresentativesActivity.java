@@ -36,7 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -56,6 +55,9 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
 
     private String state;
     private String county;
+    private boolean personsLoaded;
+    private double obamaVote;
+    private double romneyVote;
     protected ImageLoader imageLoader;
     protected static List<Senator> persons;
     private GoogleApiClient mGoogleApiClient;
@@ -67,6 +69,8 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
     protected static final String DATA_KEY = "com.jgraycar.represent.data";
     protected static final String NAMES_KEY = "com.jgraycar.represent.names";
     protected static final String PARTIES_KEY = "com.jgraycar.represent.parties";
+    protected static final String OBAMA_KEY = "com.jgraycar.represent.obama";
+    protected static final String ROMNEY_KEY = "com.jgraycar.represent.romney";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,31 +96,61 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
+        personsLoaded = false;
+        obamaVote = -1;
+        romneyVote = -1;
+
         setLocation(extras.getInt(QUERY_TYPE_KEY), extras.getString(LOCATION_KEY));
         initializeData(extras.getString(DATA_KEY));
 
     }
 
     private void setLocation(int queryType, String loc) {
-        String url = "";
-
         if (queryType == SetLocationActivity.ZIP_CODE_LOOKUP) {
-            url = "https://maps.googleapis.com/maps/api/geocode/json?&address=" + loc +
+            // Convert zipcode to coordinates and call again
+            String url = "https://maps.googleapis.com/maps/api/geocode/json?&address=" + loc +
                     "&key=" + GOOGLE_API_KEY;
-        } else if (queryType == SetLocationActivity.CURRENT_LOCATION_LOOKUP) {
-            // loc is LAT:LON
-            String[] parts = loc.split(":");
-            String lat = parts[0];
-            String lng = parts[1];
+            Log.d("Location", "Zip code query to " + url);
+            RetrieveHTTPResponseTask task = new RetrieveHTTPResponseTask(new AsyncResponse() {
+                @Override
+                public void processFinish(String output) {
+                    try {
+                        JSONObject obj = (JSONObject) new JSONTokener(output).nextValue();
+                        JSONObject result = obj.getJSONArray("results").getJSONObject(0);
+                        JSONObject geo = result.getJSONObject("geometry");
+                        JSONObject loc = geo.getJSONObject("location");
+                        double lat = loc.getDouble("lat");
+                        double lng = loc.getDouble("lng");
+                        String coords = String.valueOf(lat) + ":" + String.valueOf(lng);
+                        setLocation(SetLocationActivity.CURRENT_LOCATION_LOOKUP, coords);
+                    } catch (JSONException e) {
+                        Log.e("Location", "Error while parsing JSON: " + e.getLocalizedMessage());
+                    }
+                }
 
-            url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng +
-                    "&key=" + GOOGLE_API_KEY;
+                @Override
+                public void prepareStart() {
+
+                }
+            });
+
+            try {
+                task.execute(new URL(url));
+            } catch (MalformedURLException e) { }
+            return;
         }
+
+        // loc is LAT:LON
+        String[] parts = loc.split(":");
+        String lat = parts[0];
+        String lng = parts[1];
+
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng +
+                "&key=" + GOOGLE_API_KEY;
         Log.d("Location", "Lookup URL: " + url);
         RetrieveHTTPResponseTask task = new RetrieveHTTPResponseTask(new AsyncResponse() {
             @Override
             public void processFinish(String output) {
-                Log.d("Location", "Response: " + output);
                 try {
                     JSONObject obj = (JSONObject) new JSONTokener(output).nextValue();
                     JSONArray results = obj.getJSONArray("results");
@@ -128,7 +162,7 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
 
                         for (int j = 0; j < types.length(); j += 1) {
                             String type = types.getString(j);
-                            if (type.equals("postal_code")) {
+                            if (type.equals("administrative_area_level_2")) {
                                 isPostalCode = true;
                                 break;
                             }
@@ -159,6 +193,7 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
                     Log.e("Location", "Error while parsing JSON response");
                 }
                 Log.d("Location", "Location detected to be " + county + ", " + state);
+                getElectionVotes();
             }
 
             @Override
@@ -170,10 +205,46 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
         } catch (MalformedURLException e) { }
     }
 
+    private void getElectionVotes() {
+        if (county == null) {
+            return;
+        }
+
+        String url = "https://raw.githubusercontent.com/cs160-sp16/voting-data/master/election-county-2012.json";
+        RetrieveHTTPResponseTask task = new RetrieveHTTPResponseTask(new AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                try {
+                    JSONArray results = (JSONArray) new JSONTokener(output).nextValue();
+
+                    for (int i = 0; i < results.length(); i += 1) {
+                        JSONObject obj = results.getJSONObject(i);
+                        if (obj.getString("state-postal").equals(state) &&
+                                county.startsWith(obj.getString("county-name"))) {
+                            obamaVote = obj.getDouble("obama-percentage");
+                            romneyVote = obj.getDouble("romney-percentage");
+                            break;
+                        }
+                    }
+                    sendToWatch();
+                } catch (JSONException e) {
+
+                }
+            }
+
+            @Override
+            public void prepareStart() {
+
+            }
+        });
+
+        try {
+            task.execute(new URL(url));
+        } catch (MalformedURLException e) { }
+    }
+
     private void initializeData(String data) {
         persons = new ArrayList<>();
-        ArrayList<String> names = new ArrayList<>();
-        ArrayList<String> parties = new ArrayList<>();
 
         try {
             JSONObject response = (JSONObject) new JSONTokener(data).nextValue();
@@ -191,8 +262,6 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
                 String website = person.getString("website").replace("http://", "").replace("https://", "");
                 final Senator senator = new Senator(name, term, party, email, website, twitterId, bioguideId);
                 persons.add(senator);
-                names.add(name);
-                parties.add(party);
 
                 RetrieveHTTPResponseTask committeesTask = new RetrieveHTTPResponseTask(new AsyncResponse() {
                     @Override
@@ -263,17 +332,36 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
             return;
         }
 
+        personsLoaded = true;
         getTwitterInfo();
+        sendToWatch();
+    }
 
-        Intent sendIntent = new Intent(getBaseContext(), PhoneToWatchService.class);
-        Bundle extras = new Bundle();
+    private void sendToWatch() {
+        if (personsLoaded && obamaVote >= 0 && romneyVote >= 0) {
+            Log.d("Watch", "Sending to watch");
+            Log.d("Watch", "Obama: " + String.valueOf(obamaVote));
+            Log.d("Watch", "Romney: " + String.valueOf(romneyVote));
+            ArrayList<String> names = new ArrayList<>();
+            ArrayList<String> parties = new ArrayList<>();
 
-        extras.putStringArrayList(NAMES_KEY, names);
-        extras.putStringArrayList(PARTIES_KEY, parties);
-        extras.putString(LOCATION_KEY, county + ", " + state);
-        sendIntent.putExtras(extras);
+            for (Senator senator : persons) {
+                names.add(senator.name);
+                parties.add(senator.party);
+            }
 
-        startService(sendIntent);
+            Intent sendIntent = new Intent(getBaseContext(), PhoneToWatchService.class);
+            Bundle extras = new Bundle();
+
+            extras.putStringArrayList(NAMES_KEY, names);
+            extras.putStringArrayList(PARTIES_KEY, parties);
+            extras.putString(LOCATION_KEY, county + ", " + state);
+            extras.putDouble(OBAMA_KEY, obamaVote);
+            extras.putDouble(ROMNEY_KEY, romneyVote);
+            sendIntent.putExtras(extras);
+
+            startService(sendIntent);
+        }
     }
 
     public void getTwitterInfo() {
@@ -309,23 +397,24 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
 
                     client.getStatusesService().userTimeline(null, person.twitterId, 1, null, null,
                             null, null, null, null, new Callback<List<Tweet>>() {
-                                @Override
-                                public void success(Result<List<Tweet>> result) {
-                                    Tweet tweet = result.data.get(0);
-                                    person.tweetId = tweet.id;
-                                    Log.d("T", "Tweet id: " + String.valueOf(tweet.id));
-                                    person.tweetView = new TweetView(ListRepresentativesActivity.this, tweet);
+                        @Override
+                        public void success(Result<List<Tweet>> result) {
+                            Tweet tweet = result.data.get(0);
+                            person.tweetId = tweet.id;
+                            Log.d("T", "Tweet id: " + String.valueOf(tweet.id));
+                            person.tweetView = new TweetView(ListRepresentativesActivity.this, tweet);
 
-                                    if (readyToConstructCards()) {
-                                        constructCards();
-                                    }
-                                }
+                            if (readyToConstructCards()) {
+                                constructCards();
+                            }
+                        }
 
-                                @Override
-                                public void failure(TwitterException e) {
-                                    Log.e("T", "Error while retrieving last tweet: " + e.getMessage());
-                                }
-                            });
+                        @Override
+                        public void failure(TwitterException e) {
+                            Log.e("T", "Error while retrieving last tweet: " + e.getMessage());
+                            person.tweetId = -1;
+                        }
+                    });
                 }
             }
 
@@ -338,7 +427,7 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
 
     private boolean readyToConstructCards() {
         for (Senator senator : persons) {
-            if (senator.photo == null || senator.tweetView == null) {
+            if (senator.photo == null || senator.tweetId == 0) {
                 return false;
             }
         }

@@ -1,23 +1,15 @@
 package com.jgraycar.represent;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 public class SenatorDetailsActivity extends AppCompatActivity {
     protected static final String NAME_KEY = "com.jgraycar.represent.name";
@@ -33,19 +25,15 @@ public class SenatorDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
-        ImageLoader.getInstance().init(config);
-        ImageLoader imageLoader = ImageLoader.getInstance();
-
         Intent intent = getIntent();
         Bundle args = intent.getExtras();
 
         String name = args.getString(NAME_KEY);
         Senator senator = ListRepresentativesActivity.senatorWithName(name);
-        String term = args.getString(TERM_KEY);
-        String party = args.getString(PARTY_KEY);
-        String[] committees = args.getStringArray(COMMITTEES_KEY);
-        String[] bills = args.getStringArray(BILLS_KEY);
+        String term = senator.term;
+        String party = senator.party;
+        String[] committees = senator.committees;
+        String[] bills = senator.bills;
 
         int partyIconId;
 
