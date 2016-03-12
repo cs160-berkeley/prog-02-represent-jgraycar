@@ -41,16 +41,18 @@ public class SenatorCardFragment extends CardFragment {
         senatorName.setText(name);
 
         String party = args.getString("party");
-        senatorParty.setText(party);
         switch(party) {
-            case "Democrat":
+            case "D":
                 senatorParty.setTextColor(getResources().getColor(R.color.democrat));
+                senatorParty.setText("Democrat");
                 break;
-            case "Republican":
+            case "R":
                 senatorParty.setTextColor(getResources().getColor(R.color.republican));
+                senatorParty.setText("Republican");
                 break;
             default:
                 senatorParty.setTextColor(getResources().getColor(R.color.independent));
+                senatorParty.setText("Independent");
         }
 
         v.setOnClickListener(new View.OnClickListener() {

@@ -48,12 +48,10 @@ public class DisplaySenatorActivity extends Activity implements SensorEventListe
     private static final int SHAKE_THRESHOLD = 800;
 
     private void initializeData(String[] names, String[] parties) {
-        int[] pictures;
-        pictures = new int[] { R.drawable.barbara, R.drawable.dianne, R.drawable.lee };
         senators = new ArrayList<>();
 
         for (int i = 0; i < names.length; i += 1) {
-            senators.add(new Senator(names[i], parties[i], pictures[i]));
+            senators.add(new Senator(names[i], parties[i]));
         }
 
         adapter.notifyDataSetChanged();

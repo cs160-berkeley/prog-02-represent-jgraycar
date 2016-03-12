@@ -45,11 +45,20 @@ public class SenatorGridPagerAdapter extends FragmentGridPagerAdapter {
     @Override
     public Drawable getBackgroundForPage(int row, int column) {
         if(row == 0 && column < ((DisplaySenatorActivity) mContext).senators.size()) {
-            // Place image at specified position
-            int photoId = ((DisplaySenatorActivity) mContext).senators.get(column).photoId;
+            String party = ((DisplaySenatorActivity) mContext).senators.get(column).party;
+            int photoId;
+            switch(party) {
+                case "D":
+                    photoId = R.drawable.dem_symbol;
+                    break;
+                case "R":
+                    photoId = R.drawable.rep_symbol;
+                    break;
+                default:
+                    photoId = R.drawable.ind_symbol;
+            }
             return mContext.getResources().getDrawable(photoId, null);
         } else {
-            // Default to background image for row
             return GridPagerAdapter.BACKGROUND_NONE;
         }
     }

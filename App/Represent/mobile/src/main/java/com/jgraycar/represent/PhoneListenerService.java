@@ -43,7 +43,7 @@ public class PhoneListenerService extends WearableListenerService {
         } else if (messageEvent.getPath().equalsIgnoreCase(SHAKE_PATH)) {
             System.out.println("watch shaken!");
             Intent intent = new Intent(this, ListRepresentativesActivity.class);
-            intent.putExtra(ListRepresentativesActivity.LOCATION_KEY, 2);
+            intent.putExtra(ListRepresentativesActivity.LOCATION_KEY, "98451");
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             startActivity(intent);

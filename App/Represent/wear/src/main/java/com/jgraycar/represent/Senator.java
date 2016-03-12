@@ -6,11 +6,9 @@ package com.jgraycar.represent;
 public class Senator {
     public String name;
     public String party;
-    public int photoId;
 
-    public Senator(String name, String party, int photoId) {
+    public Senator(String name, String party) {
         this.name = name;
         this.party = party;
-        this.photoId = photoId;
     }
 }

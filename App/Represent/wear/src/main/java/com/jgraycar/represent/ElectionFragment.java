@@ -25,9 +25,9 @@ public class ElectionFragment extends Fragment {
         String location = getArguments().getString("location");
 
         String[] parts = location.split(":");
-        district.setText("Calhoun, AL");
-        obamaVotes.setText("15%");
-        romneyVotes.setText("85%");
+        district.setText(parts[0]);
+        obamaVotes.setText(parts[1] + "%");
+        romneyVotes.setText(parts[2] + "%");
         return v;
     }
 
