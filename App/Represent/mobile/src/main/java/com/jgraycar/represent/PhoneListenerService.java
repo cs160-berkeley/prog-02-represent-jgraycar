@@ -11,8 +11,15 @@ import android.widget.Toast;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * Created by joleary and noon on 2/19/16 at very late in the night. (early in the morning?)
@@ -41,15 +48,61 @@ public class PhoneListenerService extends WearableListenerService {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else if (messageEvent.getPath().equalsIgnoreCase(SHAKE_PATH)) {
-            System.out.println("watch shaken!");
-            Intent intent = new Intent(this, ListRepresentativesActivity.class);
-            intent.putExtra(ListRepresentativesActivity.LOCATION_KEY, "98451");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            final String location = randomZip();
 
-            startActivity(intent);
+            String urlStr = "http://congress.api.sunlightfoundation.com/legislators/locate?zip=" + location
+                    + "&apikey=" + SetLocationActivity.SUNLIGHT_API_KEY;
+            RetrieveHTTPResponseTask task = new RetrieveHTTPResponseTask(new AsyncResponse() {
+                @Override
+                public void processFinish(String response) {
+                    if (response == null) {
+                        return;
+                    }
+
+
+                    int numResults;
+                    try {
+                        JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+                        numResults = object.getInt("count");
+                    } catch (JSONException e) {
+                        Log.e("T", "Malformed JSON response");
+                        return;
+                    }
+
+                    if (numResults == 0) {
+                        return;
+                    }
+
+                    Intent intent = new Intent(PhoneListenerService.this, ListRepresentativesActivity.class);
+                    intent.putExtra(ListRepresentativesActivity.DATA_KEY, response);
+                    intent.putExtra(ListRepresentativesActivity.LOCATION_KEY, location);
+                    intent.putExtra(ListRepresentativesActivity.QUERY_TYPE_KEY, SetLocationActivity.ZIP_CODE_LOOKUP);
+
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+
+                }
+
+                @Override
+                public void prepareStart() {
+
+                }
+            });
+
+            try {
+                URL url = new URL(urlStr);
+                task.execute(url);
+            } catch (Exception e) {
+            }
+            System.out.println("watch shaken!");
         } else {
             super.onMessageReceived(messageEvent);
         }
 
+    }
+
+    private String randomZip() {
+        Random rand = new Random();
+        return String.valueOf(rand.nextInt(10000));
     }
 }

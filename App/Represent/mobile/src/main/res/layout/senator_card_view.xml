@@ -61,7 +61,7 @@
                 android:layout_width="19dp"
                 android:layout_height="19dp"
                 android:layout_marginEnd="12dp"
-                android:layout_marginBottom="14dp"
+                android:layout_marginBottom="17dp"
                 android:id="@+id/emailImageView"
                 android:src="@drawable/email"
                 android:layout_toEndOf="@+id/senator_photo"

@@ -16,6 +16,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Welcome"
+        android:textSize="36sp"
+        android:textColor="#F2F2F2"
         android:id="@+id/textView"
         android:paddingTop="30dp"
         android:layout_gravity="center_horizontal" />
@@ -24,6 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="28sp"
+        android:textColor="#F2F2F2"
         android:text="to"
         android:id="@+id/textView2"
         android:layout_gravity="center_horizontal" />
@@ -34,6 +38,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Represent!"
         android:id="@+id/textView3"
+        android:textSize="48sp"
+        android:textColor="#F2F2F2"
         android:paddingBottom="80dp"
         android:layout_gravity="center_horizontal" />
 
@@ -48,6 +54,9 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Please enter your zipcode:"
+            android:layout_marginBottom="10dp"
+            android:textSize="24sp"
+            android:textColor="#F2F2F2"
             android:id="@+id/textView4"
             android:layout_gravity="center_horizontal" />
 
@@ -55,25 +64,29 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="20dp"
-            android:paddingLeft="20dp"
+            android:gravity="center_horizontal"
             android:layout_gravity="center_horizontal">
 
             <EditText
-                android:layout_width="0dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
                 android:inputType="number"
                 android:ems="10"
                 android:id="@+id/zipCodeEditText"
-                android:layout_gravity="center_horizontal" />
+                android:background="#F2F2F2"
+                android:textColor="#000"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:gravity="center"
+                android:layout_gravity="center" />
 
             <Button
-                android:layout_width="0dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 style="?android:attr/borderlessButtonStyle"
-                android:layout_weight="2"
                 android:text="Submit"
+                android:textColor="#75D1EF"
+                android:textSize="18sp"
                 android:onClick="useZipCode"
                 android:id="@+id/useZipCode" />
         </LinearLayout>
@@ -84,6 +97,7 @@
             android:layout_height="wrap_content"
             style="?android:attr/borderlessButtonStyle"
             android:text="Use current location"
+            android:textColor="#75D1EF"
             android:onClick="useCurrentLocation"
             android:id="@+id/useCurrentLocation" />
 
