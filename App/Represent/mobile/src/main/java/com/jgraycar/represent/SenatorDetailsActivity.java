@@ -64,7 +64,7 @@ public class SenatorDetailsActivity extends AppCompatActivity {
             TextView tv = new TextView(this);
             tv.setText(committee);
             tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-            tv.setPadding(0,0,0,55);
+            tv.setPadding(0,0,0,45);
             committeesLayout.addView(tv);
         }
 
@@ -72,7 +72,7 @@ public class SenatorDetailsActivity extends AppCompatActivity {
             TextView tv = new TextView(this);
             tv.setText(bill);
             tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-            tv.setPadding(0,0,0,75);
+            tv.setPadding(0,0,0,45);
             billsLayout.addView(tv);
         }
 

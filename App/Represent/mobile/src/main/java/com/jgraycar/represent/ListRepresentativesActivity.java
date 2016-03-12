@@ -302,7 +302,11 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
                             for (int i = 0; i < results.length(); i += 1) {
                                 JSONObject bill = results.getJSONObject(i);
                                 if (!bill.getString("short_title").equals("null")) {
-                                    bills.add(bill.getString("short_title"));
+                                    String date = bill.getString("introduced_on");
+                                    String[] parts = date.split("-");
+                                    date = parts[1] + "/" + parts[2] + "/" + parts[0];
+                                    String text = bill.getString("short_title") + " (" + date + ")";
+                                    bills.add(text);
                                 }
                             }
                         } catch (JSONException e) {
@@ -402,13 +406,17 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
                             null, null, null, null, new Callback<List<Tweet>>() {
                         @Override
                         public void success(Result<List<Tweet>> result) {
-                            Tweet tweet = result.data.get(0);
-                            person.tweetId = tweet.id;
-                            Log.d("T", "Tweet id: " + String.valueOf(tweet.id));
-                            person.tweetView = new TweetView(ListRepresentativesActivity.this, tweet);
+                            if (result.data.size() > 0) {
+                                Tweet tweet = result.data.get(0);
+                                person.tweetId = tweet.id;
+                                Log.d("T", "Tweet id: " + String.valueOf(tweet.id));
+                                person.tweetView = new TweetView(ListRepresentativesActivity.this, tweet);
 
-                            if (readyToConstructCards()) {
-                                constructCards();
+                                if (readyToConstructCards()) {
+                                    constructCards();
+                                }
+                            } else {
+                                person.tweetId = -1;
                             }
                         }
 
