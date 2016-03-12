@@ -59,18 +59,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
     public void onBindViewHolder(final SenatorViewHolder senatorViewHolder, int i) {
         final Senator senator = senators.get(i);
 
-        Log.d("T", "senator photo url: " + senator.photoUrl);
-        String imageUrl = senator.photoUrl;
-        ((ListRepresentativesActivity) context).imageLoader.loadImage(imageUrl, new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                Drawable[] layers = new Drawable[2];
-                layers[0] = new BitmapDrawable(parent.getResources(), loadedImage);
-                layers[1] = ContextCompat.getDrawable(parent.getContext(), senator.partyIconId());
-                LayerDrawable layerDrawable = new LayerDrawable(layers);
-                senatorViewHolder.senatorPhoto.setImageDrawable(layerDrawable);
-            }
-        });
+        Drawable[] layers = new Drawable[2];
+        layers[0] = new BitmapDrawable(parent.getResources(), senator.photo);
+        layers[1] = ContextCompat.getDrawable(parent.getContext(), senator.partyIconId());
+        LayerDrawable layerDrawable = new LayerDrawable(layers);
+        senatorViewHolder.senatorPhoto.setImageDrawable(layerDrawable);
 
         senatorViewHolder.senatorName.setText(senator.name);
         senatorViewHolder.senatorTerm.setText(senator.term);
@@ -80,21 +73,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SenatorViewHolder>
         senatorViewHolder.detailsButton.setTag(senator);
         senatorViewHolder.senatorPhoto.setTag(senator);
 
-        // TODO: Base this Tweet ID on some data from elsewhere in your app
-        long tweetId = 631879971628183552L;
-        TweetUtils.loadTweet(tweetId, new LoadCallback<Tweet>() {
-            @Override
-            public void success(Tweet result) {
-                TweetView tweetView = new TweetView(context, result);
-                senatorViewHolder.senatorTweet.addView(tweetView);
-            }
-
-            @Override
-            public void failure(TwitterException exception) {
-                Log.d("TwitterKit", "Load Tweet failure", exception);
-            }
-        });
-
+        senatorViewHolder.senatorTweet.addView(senator.tweetView);
     }
 
     @Override

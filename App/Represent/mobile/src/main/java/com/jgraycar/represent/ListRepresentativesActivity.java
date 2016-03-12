@@ -1,40 +1,43 @@
 package com.jgraycar.represent;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.AppSession;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
-import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.models.User;
-import com.twitter.sdk.android.tweetui.TweetUtils;
+import com.twitter.sdk.android.tweetui.TweetView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,12 +52,16 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
     private static final String TWITTER_KEY = "MqTzygecSlEiu7xB644w4OQRx";
     private static final String TWITTER_SECRET = "irdk0Nj1qxop4nYyxRcVkEo3nB2dYWu37KocA3hT6HAPRzWHU5";
+    private static final String GOOGLE_API_KEY = "AIzaSyCKezGv9d4dGgw7WgKSFbRSYmUlm4M6Yfw";
 
-    RecyclerView rv;
-    private String location;
+    private String state;
+    private String county;
     protected ImageLoader imageLoader;
     protected static List<Senator> persons;
     private GoogleApiClient mGoogleApiClient;
+    private RecyclerView rv;
+    private ProgressBar progressBar;
+
     protected static final String LOCATION_KEY = "com.jgraycar.represent.location";
     protected static final String QUERY_TYPE_KEY = "com.jgraycar.represent.query_type";
     protected static final String DATA_KEY = "com.jgraycar.represent.data";
@@ -75,6 +82,9 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
         imageLoader = ImageLoader.getInstance();
@@ -88,13 +98,76 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
     }
 
     private void setLocation(int queryType, String loc) {
+        String url = "";
+
         if (queryType == SetLocationActivity.ZIP_CODE_LOOKUP) {
-            // do stuff
-            location = "Alameda County, CA";
+            url = "https://maps.googleapis.com/maps/api/geocode/json?&address=" + loc +
+                    "&key=" + GOOGLE_API_KEY;
         } else if (queryType == SetLocationActivity.CURRENT_LOCATION_LOOKUP) {
             // loc is LAT:LON
-            location = "Alameda County, CA";
+            String[] parts = loc.split(":");
+            String lat = parts[0];
+            String lng = parts[1];
+
+            url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng +
+                    "&key=" + GOOGLE_API_KEY;
         }
+        Log.d("Location", "Lookup URL: " + url);
+        RetrieveHTTPResponseTask task = new RetrieveHTTPResponseTask(new AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                Log.d("Location", "Response: " + output);
+                try {
+                    JSONObject obj = (JSONObject) new JSONTokener(output).nextValue();
+                    JSONArray results = obj.getJSONArray("results");
+
+                    for (int i = 0; i < results.length(); i += 1) {
+                        JSONObject result = results.getJSONObject(i);
+                        JSONArray types = result.getJSONArray("types");
+                        boolean isPostalCode = false;
+
+                        for (int j = 0; j < types.length(); j += 1) {
+                            String type = types.getString(j);
+                            if (type.equals("postal_code")) {
+                                isPostalCode = true;
+                                break;
+                            }
+                        }
+
+                        if (!isPostalCode) {
+                            continue;
+                        }
+
+                        JSONArray addressComponents = result.getJSONArray("address_components");
+                        for (int k = 0; k < addressComponents.length(); k += 1) {
+                            JSONObject component = addressComponents.getJSONObject(k);
+                            JSONArray componentTypes = component.getJSONArray("types");
+                            for (int m = 0; m < componentTypes.length(); m += 1) {
+                                String componentType = componentTypes.getString(m);
+                                if (componentType.equals("administrative_area_level_2")) {
+                                    county = component.getString("short_name");
+                                    break;
+                                } else if (componentType.equals("administrative_area_level_1")) {
+                                    state = component.getString("short_name");
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                } catch (JSONException e) {
+                    Log.e("Location", "Error while parsing JSON response");
+                }
+                Log.d("Location", "Location detected to be " + county + ", " + state);
+            }
+
+            @Override
+            public void prepareStart() { }
+        });
+
+        try {
+            task.execute(new URL(url));
+        } catch (MalformedURLException e) { }
     }
 
     private void initializeData(String data) {
@@ -115,7 +188,7 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
                 String twitterId = person.getString("twitter_id");
                 String term = person.getString("term_start").substring(0, 4) + " - " + person.getString("term_end").substring(0, 4);
                 String bioguideId = person.getString("bioguide_id");
-                String website = person.getString("website");
+                String website = person.getString("website").replace("http://", "").replace("https://", "");
                 final Senator senator = new Senator(name, term, party, email, website, twitterId, bioguideId);
                 persons.add(senator);
                 names.add(name);
@@ -197,7 +270,7 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
 
         extras.putStringArrayList(NAMES_KEY, names);
         extras.putStringArrayList(PARTIES_KEY, parties);
-        extras.putString(LOCATION_KEY, location);
+        extras.putString(LOCATION_KEY, county + ", " + state);
         sendIntent.putExtras(extras);
 
         startService(sendIntent);
@@ -212,19 +285,47 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
                     client.getUserDataService().show(person.twitterId, new Callback<User>() {
                         @Override
                         public void success(Result<User> result) {
-                            Log.d("T", "Twitter profile pic: " + result.data.profileImageUrl);
+                            User user = result.data;
+                            Log.d("T", "Twitter profile pic: " + user.profileImageUrl);
                             person.photoUrl = result.data.profileImageUrl.replace("_normal", "");
+                            imageLoader.loadImage(person.photoUrl, new SimpleImageLoadingListener() {
+                                @Override
+                                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                                    person.photo = loadedImage;
 
-                            if (readyToConstructCards()) {
-                                constructCards();
-                            }
+                                    if (readyToConstructCards()) {
+                                        constructCards();
+                                    }
+                                }
+
+                            });
                         }
 
                         @Override
                         public void failure(TwitterException e) {
-
+                            Log.e("T", "Error while retrieving twitter profile picture: " + e.getMessage());
                         }
                     });
+
+                    client.getStatusesService().userTimeline(null, person.twitterId, 1, null, null,
+                            null, null, null, null, new Callback<List<Tweet>>() {
+                                @Override
+                                public void success(Result<List<Tweet>> result) {
+                                    Tweet tweet = result.data.get(0);
+                                    person.tweetId = tweet.id;
+                                    Log.d("T", "Tweet id: " + String.valueOf(tweet.id));
+                                    person.tweetView = new TweetView(ListRepresentativesActivity.this, tweet);
+
+                                    if (readyToConstructCards()) {
+                                        constructCards();
+                                    }
+                                }
+
+                                @Override
+                                public void failure(TwitterException e) {
+                                    Log.e("T", "Error while retrieving last tweet: " + e.getMessage());
+                                }
+                            });
                 }
             }
 
@@ -237,7 +338,7 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
 
     private boolean readyToConstructCards() {
         for (Senator senator : persons) {
-            if (senator.photoUrl.equals("")) {
+            if (senator.photo == null || senator.tweetView == null) {
                 return false;
             }
         }
@@ -246,12 +347,17 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
     }
 
     private void constructCards() {
+        Log.d("T", "Constructing cards");
         if (rv == null) {
             rv = (RecyclerView)findViewById(R.id.rv);
+            rv.setVisibility(View.GONE);
             LinearLayoutManager llm = new LinearLayoutManager(this);
             rv.setLayoutManager(llm);
             RVAdapter adapter = new RVAdapter(this, persons);
             rv.setAdapter(adapter);
+
+            rv.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -264,7 +370,6 @@ public class ListRepresentativesActivity extends AppCompatActivity implements
         args.putString(SenatorDetailsActivity.NAME_KEY, senator.name);
         args.putString(SenatorDetailsActivity.TERM_KEY, senator.term);
         args.putString(SenatorDetailsActivity.PARTY_KEY, senator.party);
-        args.putString(SenatorDetailsActivity.PHOTO_KEY, senator.photoUrl);
 
         args.putStringArray(SenatorDetailsActivity.COMMITTEES_KEY, senator.committees);
         args.putStringArray(SenatorDetailsActivity.BILLS_KEY, senator.bills);

@@ -22,7 +22,6 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 public class SenatorDetailsActivity extends AppCompatActivity {
     protected static final String NAME_KEY = "com.jgraycar.represent.name";
     protected static final String TERM_KEY = "com.jgraycar.represent.term";
-    protected static final String PHOTO_KEY = "com.jgraycar.represent.photo_id";
     protected static final String PARTY_KEY = "com.jgraycar.represent.party";
     protected static final String COMMITTEES_KEY = "com.jgraycar.represent.committees";
     protected static final String BILLS_KEY = "com.jgraycar.represent.bills";
@@ -42,8 +41,8 @@ public class SenatorDetailsActivity extends AppCompatActivity {
         Bundle args = intent.getExtras();
 
         String name = args.getString(NAME_KEY);
+        Senator senator = ListRepresentativesActivity.senatorWithName(name);
         String term = args.getString(TERM_KEY);
-        String photoUrl = args.getString(PHOTO_KEY);
         String party = args.getString(PARTY_KEY);
         String[] committees = args.getStringArray(COMMITTEES_KEY);
         String[] bills = args.getStringArray(BILLS_KEY);
@@ -89,14 +88,7 @@ public class SenatorDetailsActivity extends AppCompatActivity {
             billsLayout.addView(tv);
         }
 
-        final AppBarLayout appBar = (AppBarLayout) findViewById(R.id.app_bar);
-        imageLoader.loadImage(photoUrl, new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                BitmapDrawable ob = new BitmapDrawable(getResources(), loadedImage);
-                appBar.setBackground(ob);
-            }
-
-        });
+        AppBarLayout appBar = (AppBarLayout) findViewById(R.id.app_bar);
+        appBar.setBackground(new BitmapDrawable(getResources(), senator.photo));
     }
 }

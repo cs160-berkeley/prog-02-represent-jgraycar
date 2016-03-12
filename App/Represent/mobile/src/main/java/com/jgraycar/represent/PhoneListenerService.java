@@ -37,7 +37,6 @@ public class PhoneListenerService extends WearableListenerService {
 
             args.putString(SenatorDetailsActivity.NAME_KEY, senator.name);
             args.putString(SenatorDetailsActivity.TERM_KEY, senator.term);
-            args.putInt(SenatorDetailsActivity.PHOTO_KEY, senator.photoId);
             args.putString(SenatorDetailsActivity.PARTY_KEY, senator.party);
             args.putStringArray(SenatorDetailsActivity.COMMITTEES_KEY, senator.committees);
             args.putStringArray(SenatorDetailsActivity.BILLS_KEY, senator.bills);
